@@ -1,10 +1,10 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-from PyTMM.transferMatrix import *
+from PyTMM.transferMatrix import TransferMatrix, solvePropagation, Polarization
 
 n = 2
-aoi = np.linspace(0, np.pi/2, 1000)
+aoi = np.linspace(0, np.pi / 2, 1000)
 TE = []
 TM = []
 for i in aoi:

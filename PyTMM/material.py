@@ -1,15 +1,14 @@
-import os
-import yaml
-import sys
 import argparse
-import numpy
-import scipy.interpolate
+import os
+import sys
 from io import open
 
-from . import RefractiveIndex
-from . import TabulatedRefractiveIndexData
-from . import ExtinctionCoefficientData, NoExtinctionCoefficient
-from . import FormulaRefractiveIndexData
+import scipy.interpolate
+import yaml
+
+from . import (ExtinctionCoefficientData, FormulaRefractiveIndexData,
+               NoExtinctionCoefficient, RefractiveIndex,
+               TabulatedRefractiveIndexData)
 
 
 class Material:

@@ -1,6 +1,7 @@
+import os
 from unittest import TestCase
 
-from PyTMM.refractiveIndex import *
+from PyTMM.refractiveIndex import RefractiveIndex
 
 
 class TestRefractiveIndex(TestCase):

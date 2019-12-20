@@ -1,23 +1,23 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-from PyTMM.transferMatrix import *
+from PyTMM.transferMatrix import TransferMatrix, solvePropagation, Polarization
 
 n = 2
 d = 600  # slab thickness, nm
-l = 500  # wavelength, nm
-ran = np.linspace(0, np.pi/2, 1000)
+wavelength = 500  # wavelength, nm
+ran = np.linspace(0, np.pi / 2, 1000)
 TE = []
 TM = []
 for i in ran:
     # TE
-    a = TransferMatrix.layer(n, d, l, i, Polarization.s)
+    a = TransferMatrix.layer(n, d, wavelength, i, Polarization.s)
 
     R, T = solvePropagation(a)
     TE.append(np.abs(R**2))
 
     # TM
-    a = TransferMatrix.layer(n, d, l, i, Polarization.p)
+    a = TransferMatrix.layer(n, d, wavelength, i, Polarization.p)
     R, T = solvePropagation(a)
     TM.append(np.abs(R**2))
 

@@ -1,13 +1,14 @@
 import matplotlib.pyplot as plt
+import numpy as np
 
-from PyTMM.transferMatrix import *
+from PyTMM.transferMatrix import TransferMatrix, solvePropagation
 
 r, t = [], []
 r1, t1 = [], []
 r2, t2 = [], []
 r3, t3 = [], []
 
-wavelengths = numpy.linspace(300, 1500, 2000)
+wavelengths = np.linspace(300, 1500, 2000)
 for i in wavelengths:
     a = TransferMatrix.layer(1.46, 200, i)
     b = TransferMatrix.layer(1.46 - 0.001j, 200, i)
@@ -15,13 +16,13 @@ for i in wavelengths:
     d = TransferMatrix.layer(1.46 - 0.1j, 200, i)
 
     R = solvePropagation(a)[0]
-    r.append(numpy.abs(R) ** 2)
+    r.append(np.abs(R) ** 2)
     R = solvePropagation(b)[0]
-    r1.append(numpy.abs(R) ** 2)
+    r1.append(np.abs(R) ** 2)
     R = solvePropagation(c)[0]
-    r2.append(numpy.abs(R) ** 2)
+    r2.append(np.abs(R) ** 2)
     R = solvePropagation(d)[0]
-    r3.append(numpy.abs(R) ** 2)
+    r3.append(np.abs(R) ** 2)
 
 plt.plot(wavelengths, r)
 plt.plot(wavelengths, r1)
