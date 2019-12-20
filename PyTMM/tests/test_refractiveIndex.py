@@ -3,6 +3,9 @@ from unittest import TestCase
 
 from PyTMM.refractiveIndex import RefractiveIndex
 
+# DB_PATH = os.path.join(os.path.dirname(os.path.realpath(__file__)),
+#                        os.path.normpath("../RefractiveIndex/"))
+
 
 class TestRefractiveIndex(TestCase):
 

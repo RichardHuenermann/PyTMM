@@ -7,7 +7,7 @@ import scipy.interpolate
 import yaml
 
 from . import (ExtinctionCoefficientData, FormulaRefractiveIndexData,
-               RefractiveIndex, TabulatedRefractiveIndexData)
+               TabulatedRefractiveIndexData)
 
 
 class Material:

@@ -10,15 +10,17 @@ import argparse
 import numpy
 import scipy.interpolate
 from io import open
+from pathlib import Path
 
-from .material import Material
+from PyTMM import Material
+
+DATABASE = Path.cwd() / '..' / "glass_database"
 
 
 class RefractiveIndex:
     """Class that parses the refractiveindex.info YAML database"""
 
-    def __init__(self, databasePath=os.path.join(os.path.dirname(os.path.realpath(__file__)),
-                                                 os.path.normpath("../RefractiveIndex/"))):
+    def __init__(self, databasePath=DATABASE):
         """
 
         :param databasePath:
