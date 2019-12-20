@@ -12,15 +12,16 @@ import scipy.interpolate
 from io import open
 from pathlib import Path
 
-from PyTMM import Material
+from . import Material
 
-DATABASE = Path.cwd() / '..' / "glass_database"
+DATA_BASE_PATH = os.path.join(os.path.dirname(os.path.realpath(__file__)),
+                              os.path.normpath("glass_database/"))
 
 
 class RefractiveIndex:
     """Class that parses the refractiveindex.info YAML database"""
 
-    def __init__(self, databasePath=DATABASE):
+    def __init__(self, databasePath=DATA_BASE_PATH):
         """
 
         :param databasePath:
@@ -49,30 +50,44 @@ class RefractiveIndex:
         #             pages.append(Page(**rawPage))
         #         book.pages = pages
 
-    def get_material_filename(self, shelf, book, page):
-        """
+    # def get_material_filename(self, shelf, book, page):
+    #     """
 
-        :param shelf:
-        :param book:
-        :param page:
-        :return:
-        """
-        filename = ''
-        # FIXME:There MUST be a way to access an elements w/o iterating over the whole damn dictionary.
-        for sh in self.catalog:
-            if sh['SHELF'] == shelf:
-                for b in sh['content']:
-                    if 'DIVIDER' not in b:
-                        if b['BOOK'] == book:
-                            for p in b['content']:
-                                if 'DIVIDER' not in p:
-                                    if p['PAGE'] == page:
-                                        # print("From {0} opening {1}, {2}\n".format(sh['name'], b['name'], p['name']))
-                                        filename = os.path.join(
-                                            self.referencePath, 'data', os.path.normpath(p['data']))
-                                        # print("Located at {}".format(filename))
-        assert filename != ''
-        return filename
+    #     ## Args:
+    #         shelf
+    #         book
+    #         page
+    #     :return:
+    #     """
+    #     filename = ''
+    #     # FIXME:There MUST be a way to access an elements w/o iterating over the whole damn dictionary.
+    #     for sh in self.catalog:
+    #         if sh['SHELF'] == shelf:
+    #             for b in sh['content']:
+    #                 if 'DIVIDER' not in b:
+    #                     if b['BOOK'] == book:
+    #                         for p in b['content']:
+    #                             if 'DIVIDER' not in p:
+    #                                 if p['PAGE'] == page:
+    #                                     # print("From {0} opening {1}, {2}\n".format(sh['name'], b['name'], p['name']))
+    #                                     filename = os.path.join(
+    #                                         self.referencePath, 'data', os.path.normpath(p['data']))
+    #                                     # print("Located at {}".format(filename))
+    #     assert filename != ''
+    #     return filename
+
+    def get_material_filename(self, shelf, book, page):
+        glass_catalog = book
+        filename = page + '.yml'
+        for root, _, files in os.walk(self.referencePath):
+            if root.endswith(glass_catalog):
+                break
+        for f in files:
+            if f == filename:
+                filepath = os.path.join(self.referencePath, root, filename)
+                break
+        print(filepath)
+        return filepath
 
     def get_material(self, shelf, book, page):
         """

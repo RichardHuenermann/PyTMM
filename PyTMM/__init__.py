@@ -5,8 +5,8 @@ from .formulaRefractiveIndexData import FormulaRefractiveIndexData
 from .extinctionCoefficientData import ExtinctionCoefficientData
 from .extinctionCoefficientData import ExtinctionCoefficientData, NoExtinctionCoefficient
 from .tabulatedRefractiveIndexData import TabulatedRefractiveIndexData
+from .material import Material  # must be before RefractiveIndex.
 from .refractiveIndex import RefractiveIndex
-from .material import Material
 
 __all__ = [
     'FormulaRefractiveIndexData',
