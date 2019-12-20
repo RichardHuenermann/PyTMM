@@ -1,22 +1,6 @@
-#    This file is part of PyTMM.
-#
-#    PyTMM is free software: you can redistribute it and/or modify
-#    it under the terms of the GNU General Public License as published by
-#    the Free Software Foundation, either version 3 of the License, or
-#    (at your option) any later version.
-#
-#    PyTMM is distributed in the hope that it will be useful,
-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU General Public License for more details.
-#
-#    You should have received a copy of the GNU General Public License
-#    along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
-#
-#
-#   Copyright 2014-2015 Pavel Dmitriev <pavel.a.dmitriev@gmail.com>
-
-
+""" TODO: add proper wavelength unit documentation in docstrings
+TODO: remove lambda expression assignments.
+"""
 import os
 import yaml
 import sys
@@ -39,7 +23,8 @@ class RefractiveIndex:
         :param databasePath:
         """
         self.referencePath = os.path.normpath(databasePath)
-        fileName = os.path.join(self.referencePath, os.path.normpath("library.yml"))
+        fileName = os.path.join(
+            self.referencePath, os.path.normpath("library.yml"))
         with open(fileName, "rt", encoding="utf-8") as f:
             self.catalog = yaml.safe_load(f)
 
@@ -80,7 +65,8 @@ class RefractiveIndex:
                                 if 'DIVIDER' not in p:
                                     if p['PAGE'] == page:
                                         # print("From {0} opening {1}, {2}\n".format(sh['name'], b['name'], p['name']))
-                                        filename = os.path.join(self.referencePath, 'data', os.path.normpath(p['data']))
+                                        filename = os.path.join(
+                                            self.referencePath, 'data', os.path.normpath(p['data']))
                                         # print("Located at {}".format(filename))
         assert filename != ''
         return filename
@@ -129,22 +115,22 @@ class Material:
                     if self.refractiveIndex is not None:
                         Exception('Bad Material YAML File')
 
-                    self.refractiveIndex = RefractiveIndexData.setupRefractiveIndex(formula=-1,
-                                                                                    wavelengths=wavelengths,
-                                                                                    values=n)
+                    self.refractiveIndex = RefractiveIndexData.setup_refractive_index(formula=-1,
+                                                                                      wavelengths=wavelengths,
+                                                                                      values=n)
                 elif (data['type'].split())[1] == 'k':
-
-                    self.extinctionCoefficient = ExtinctionCoefficientData.setupExtinctionCoefficient(wavelengths, n)
+                    self.extinctionCoefficient = ExtinctionCoefficientData.setup_extinction_coefficient(
+                        wavelengths, n)
 
                 elif (data['type'].split())[1] == 'nk':
-
                     if self.refractiveIndex is not None:
                         Exception('Bad Material YAML File')
 
-                    self.refractiveIndex = RefractiveIndexData.setupRefractiveIndex(formula=-1,
-                                                                                    wavelengths=wavelengths,
-                                                                                    values=n)
-                    self.extinctionCoefficient = ExtinctionCoefficientData.setupExtinctionCoefficient(wavelengths, k)
+                    self.refractiveIndex = RefractiveIndexData.setup_refractive_index(formula=-1,
+                                                                                      wavelengths=wavelengths,
+                                                                                      values=n)
+                    self.extinctionCoefficient = ExtinctionCoefficientData.setup_extinction_coefficient(
+                        wavelengths, k)
             elif (data['type'].split())[0] == 'formula':
 
                 if self.refractiveIndex is not None:
@@ -152,18 +138,18 @@ class Material:
 
                 formula = int((data['type'].split())[1])
                 coefficents = [float(s) for s in data['coefficients'].split()]
-                for k in ['range','wavelength_range']:
+                for k in ['range', 'wavelength_range']:
                     if k in data:
                         break
                 rangeMin = float(data[k].split()[0])
                 rangeMax = float(data[k].split()[1])
 
-                self.refractiveIndex = RefractiveIndexData.setupRefractiveIndex(formula=formula,
-                                                                                rangeMin=rangeMin,
-                                                                                rangeMax=rangeMax,
-                                                                                coefficients=coefficents)
+                self.refractiveIndex = RefractiveIndexData.setup_refractive_index(formula=formula,
+                                                                                  rangeMin=rangeMin,
+                                                                                  rangeMax=rangeMax,
+                                                                                  coefficients=coefficents)
 
-    def getRefractiveIndex(self, wavelength):
+    def get_refractive_index(self, wavelength):
         """
 
         :param wavelength:
@@ -172,18 +158,19 @@ class Material:
         if self.refractiveIndex is None:
             raise Exception('No refractive index specified for this material')
         else:
-            return self.refractiveIndex.getRefractiveIndex(wavelength)
+            return self.refractiveIndex.get_refractive_index(wavelength)
 
-    def getExtinctionCoefficient(self, wavelength):
+    def get_extinction_coefficient(self, wavelength):
         """
 
         :param wavelength:
         :return: :raise NoExtinctionCoefficient:
         """
         if self.extinctionCoefficient is None:
-            raise NoExtinctionCoefficient('No extinction coefficient specified for this material')
+            raise NoExtinctionCoefficient(
+                'No extinction coefficient specified for this material')
         else:
-            return self.extinctionCoefficient.getExtinctionCoefficient(wavelength)
+            return self.extinctionCoefficient.get_extinction_coefficient(wavelength)
 
 
 #
@@ -193,7 +180,7 @@ class RefractiveIndexData:
     """Abstract RefractiveIndex class"""
 
     @staticmethod
-    def setupRefractiveIndex(formula, **kwargs):
+    def setup_refractive_index(formula, **kwargs):
         """
 
         :param formula:
@@ -205,102 +192,178 @@ class RefractiveIndexData:
         elif formula == -1:
             return TabulatedRefractiveIndexData(**kwargs)
         else:
-            raise Exception('Bad RefractiveIndex data type')
+            raise KeyError('Bad RefractiveIndex data type: {}'.format(formula))
 
-    def getRefractiveIndex(self, wavelength):
+    def get_refractive_index(self, wavelength):
         """
 
         :param wavelength:
         :raise NotImplementedError:
         """
-        raise NotImplementedError('Different for functionally and experimentally defined materials')
+        raise NotImplementedError(
+            'Different for functionally and experimentally defined materials')
 
 
 class FormulaRefractiveIndexData:
     """Formula RefractiveIndex class"""
 
     def __init__(self, formula, rangeMin, rangeMax, coefficients):
-        """
+        """constructor for FormulaRefractiveIndexData object
 
-        :param formula:
-        :param rangeMin:
-        :param rangeMax:
-        :param coefficients:
+            formula (int)  # selector for which refractive index formula will be used.
+            rangeMin (float)  # minimum wavelength in microns.
+            rangeMax (float)  # maximum wavelength in microns
+            coefficients (list)  # list of floats, coefficients
         """
+        assert formula in range(
+            0, 7), 'Formula {} is not a valid option.'.format(formula)
         self.formula = formula
         self.rangeMin = rangeMin
         self.rangeMax = rangeMax
         self.coefficients = coefficients
 
-    def getRefractiveIndex(self, wavelength):
+    def get_ri_formula_name(self):
+        """Returns name of the selected refractive index formula given by self.formula.
         """
+        ntype_dict = {1: 'sellmeier1',
+                      2: 'sellmeier2',
+                      3: 'polynomial',
+                      4: 'refindexinfo',
+                      5: 'cauchy',
+                      6: 'gasses',
+                      7: 'herzberger',
+                      8: 'retro',
+                      9: 'exotic'}
+        return ntype_dict[self.formula]
 
-        :param wavelength:
-        :return: :raise Exception:
+    def get_refractive_index(self, wavelength):
+        """selects refractive index method and returns the value at the speciffied wavelength.
+
+        Args:
+            wavelength (float): in nanometers.
+
+        Raises:
+            ValueError: if wavelength out of bounds
+            KeyError: if self.formula is wrong.
         """
         wavelength /= 1000.0
-        if self.rangeMin <= wavelength <= self.rangeMax:
-            formula_type = self.formula
-            coefficients = self.coefficients
-            n = 0
-            if formula_type == 1:  # Sellmeier
-                nsq = 1 + coefficients[0]
-                g = lambda c1, c2, w: c1 * (w ** 2) / (w ** 2 - c2 ** 2)
-                for i in range(1, len(coefficients), 2):
-                    nsq += g(coefficients[i], coefficients[i + 1], wavelength)
-                n = numpy.sqrt(nsq)
-            elif formula_type == 2:  # Sellmeier-2
-                nsq = 1 + coefficients[0]
-                g = lambda c1, c2, w: c1 * (w ** 2) / (w ** 2 - c2)
-                for i in range(1, len(coefficients), 2):
-                    nsq += g(coefficients[i], coefficients[i + 1], wavelength)
-                n = numpy.sqrt(nsq)
-            elif formula_type == 3:  # Polynomal
-                g = lambda c1, c2, w: c1 * w ** c2
-                nsq = coefficients[0]
-                for i in range(1, len(coefficients), 2):
-                    nsq += g(coefficients[i], coefficients[i + 1], wavelength)
-                n = numpy.sqrt(nsq)
-            elif formula_type == 4:  # RefractiveIndex.INFO
-                g1 = lambda c1, c2, c3, c4, w: c1 * w**c2 / (w**2 - c3**c4)
-                g2 = lambda c1, c2, w: c1 * w**c2
-                nsq = coefficients[0]
-                for i in range(1, min(8, len(coefficients)), 4):
-                    nsq += g1(coefficients[i], coefficients[i+1], coefficients[i+2], coefficients[i+3], wavelength)
-                if len(coefficients) > 9:
-                    for i in range(9, len(coefficients), 2):
-                        nsq += g2(coefficients[i], coefficients[i+1], wavelength)
-                n = numpy.sqrt(nsq)
-            elif formula_type == 5:  # Cauchy
-                g = lambda c1, c2, w: c1 * w ** c2
-                n = coefficients[0]
-                for i in range(1, len(coefficients), 2):
-                    n += g(coefficients[i], coefficients[i + 1], wavelength)
-            elif formula_type == 6:  # Gasses
-                n = 1 + coefficients[0]
-                g = lambda c1, c2, w: c1 / (c2 - w ** (-2))
-                for i in range(1, len(coefficients), 2):
-                    n += g(coefficients[i], coefficients[i + 1], wavelength)
-            elif formula_type == 7:  # Herzberger
-                g1 = lambda c1, w, p: c1 / (w**2 - 0.028)**p
-                g2 = lambda c1, w, p: c1 * w**p
-                n = coefficients[0]
-                n += g1(coefficients[1], wavelength, 1)
-                n += g1(coefficients[2], wavelength, 2)
-                for i in range(3, len(coefficients)):
-                    n += g2(coefficients[i], wavelength, 2*(i-2))
-            elif formula_type == 8:  # Retro
-                raise FormulaNotImplemented('Retro formula not yet implemented')
-            elif formula_type == 9:  # Exotic
-                raise FormulaNotImplemented('Exotic formula not yet implemented')
-            else:
-                raise Exception('Bad formula type')
+        if not (self.rangeMin <= wavelength <= self.rangeMax):
+            raise ValueError(
+                'Wavelength {}um is out of bounds. Correct range(um): ({}, {})'.format(wavelength,
+                                                                                       self.rangeMin,
+                                                                                       self.rangeMax))
+        ntype_switch = {1: self.ntype_sellmeier1,
+                        2: self.ntype_sellmeier2,
+                        3: self.ntype_polynomial,
+                        4: self.ntype_refindexinfo,
+                        5: self.ntype_cauchy,
+                        6: self.ntype_gasses,
+                        7: self.ntype_herzberger,
+                        8: self.ntype_retro,
+                        9: self.ntype_exotic}
+        if self.formula not in ntype_switch:
+            raise KeyError(
+                'formula type {} does not exist.'.format(self.formula))
+        return ntype_switch[self.formula](wavelength)
 
-            return n
-        else:
-            raise Exception(
-                'Wavelength {} is out of bounds. Correct range(um): ({}, {})'.format(wavelength, self.rangeMin,
-                                                                                     self.rangeMax))
+    def ntype_sellmeier1(self, wavelength):
+        """Sellmeier equation
+        """
+        nsq = 1 + self.coefficients[0]
+
+        def sellmeier1_helper(c1, c2, w):
+            return c1 * (w**2) / (w**2 - c2**2)
+
+        for i in range(1, len(self.coefficients), 2):
+            # TODO: make loop pythonic (list expression?)
+            nsq += sellmeier1_helper(self.coefficients[i],
+                                     self.coefficients[i + 1], wavelength)
+        return numpy.sqrt(nsq)
+
+    def ntype_sellmeier2(self, wavelength):
+        """Sellmeier equation
+        TODO: make loop pythonic (list expression?)
+        """
+        nsq = 1 + self.coefficients[0]
+
+        def sellmeier2_helper(c1, c2, w):
+            return c1 * (w**2) / (w**2 - c2)
+
+        for i in range(1, len(self.coefficients), 2):
+            # TODO: make loop pythonic (list expression?)
+            nsq += sellmeier2_helper(self.coefficients[i],
+                                     self.coefficients[i + 1], wavelength)
+        return numpy.sqrt(nsq)
+
+    def ntype_polynomial(self, wavelength):
+
+        def g(c1, c2, w):
+            return c1 * w**c2
+
+        nsq = self.coefficients[0]
+        for i in range(1, len(self.coefficients), 2):
+            nsq += g(self.coefficients[i],
+                     self.coefficients[i + 1], wavelength)
+        return numpy.sqrt(nsq)
+
+    def ntype_refindexinfo(self, wavelength):
+        def g1(c1, c2, c3, c4, w):
+            return c1 * w**c2 / (w**2 - c3**c4)
+
+        def g2(c1, c2, w):
+            return c1 * w**c2
+
+        nsq = self.coefficients[0]
+        for i in range(1, min(8, len(self.coefficients)), 4):
+            nsq += g1(self.coefficients[i], self.coefficients[i + 1],
+                      self.coefficients[i + 2], self.coefficients[i + 3], wavelength)
+        if len(self.coefficients) > 9:
+            for i in range(9, len(self.coefficients), 2):
+                nsq += g2(self.coefficients[i],
+                          self.coefficients[i + 1], wavelength)
+        return numpy.sqrt(nsq)
+
+    def ntype_cauchy(self, wavelength):
+        def cauchy_helper(c1, c2, w):
+            return c1 * w**c2
+
+        ref_index = self.coefficients[0]
+        for i in range(1, len(self.coefficients), 2):
+            ref_index += cauchy_helper(self.coefficients[i],
+                                       self.coefficients[i + 1], wavelength)
+        return ref_index
+
+    def ntype_gasses(self, wavelength):
+        def gasses_helper(c1, c2, w):
+            return c1 / (c2 - w**(-2))
+
+        ref_index = 1 + self.coefficients[0]
+        for i in range(1, len(self.coefficients), 2):
+            ref_index += gasses_helper(self.coefficients[i],
+                                       self.coefficients[i + 1], wavelength)
+        return ref_index
+
+    def ntype_herzberger(self, wavelength):
+        def g1(c1, w, p):
+            return c1 / (w**2 - 0.028)**p
+
+        def g2(c1, w, p):
+            return c1 * w**p
+
+        ref_index = self.coefficients[0]
+        ref_index += g1(self.coefficients[1], wavelength, 1)
+        ref_index += g1(self.coefficients[2], wavelength, 2)
+        for i in range(3, len(self.coefficients)):
+            ref_index += g2(self.coefficients[i], wavelength, 2 * (i - 2))
+        return ref_index
+
+    def ntype_retro(self, wavelength):
+        raise NotImplementedError(
+            'refractive index formula not implemented yet.')
+
+    def ntype_exotic(self, wavelength):
+        raise NotImplementedError(
+            'refractive index formula not implemented yet.')
 
 
 class TabulatedRefractiveIndexData:
@@ -318,9 +381,10 @@ class TabulatedRefractiveIndexData:
         if self.rangeMin == self.rangeMax:
             self.refractiveFunction = values[0]
         else:
-            self.refractiveFunction = scipy.interpolate.interp1d(wavelengths, values)
+            self.refractiveFunction = scipy.interpolate.interp1d(
+                wavelengths, values)
 
-    def getRefractiveIndex(self, wavelength):
+    def get_refractive_index(self, wavelength):
         """
 
         :param wavelength:
@@ -337,14 +401,11 @@ class TabulatedRefractiveIndexData:
                                                                                      self.rangeMax))
 
 
-#
-# Extinction Coefficient
-#
 class ExtinctionCoefficientData:
     """ExtinctionCofficient class"""
 
     @staticmethod
-    def setupExtinctionCoefficient(wavelengths, values):
+    def setup_extinction_coefficient(wavelengths, values):
         """
 
         :param wavelengths:
@@ -359,11 +420,12 @@ class ExtinctionCoefficientData:
         :param wavelengths:
         :param coefficients:
         """
-        self.extCoeffFunction = scipy.interpolate.interp1d(wavelengths, coefficients)
+        self.extCoeffFunction = scipy.interpolate.interp1d(
+            wavelengths, coefficients)
         self.rangeMin = numpy.min(wavelengths)
         self.rangeMax = numpy.max(wavelengths)
 
-    def getExtinctionCoefficient(self, wavelength):
+    def get_extinction_coefficient(self, wavelength):
         """
 
         :param wavelength:
@@ -378,37 +440,22 @@ class ExtinctionCoefficientData:
                                                                                      self.rangeMax))
 
 
-#
-# Custom Exceptions
-#
-class FormulaNotImplemented(Exception):
-    def __init__(self, value):
-        self.value = value
-
-    def __str__(self):
-        return repr(self.value)
-
-
 class NoExtinctionCoefficient(Exception):
+    """Custom exception"""
+
     def __init__(self, value):
         self.value = value
 
     def __str__(self):
         return repr(self.value)
-
-
-# class WavelengthOutOfBounds(Exception):
-#     def __init__(self, value):
-#         self.value = value
-#     def __str__(self):
-#         return repr(self.value)
 
 
 # Stuff to link to matlab
 # FIXME: This sucks. Seriously. For one data point we have to open two files, and read the whole catalog.
 # EVERY FRIKIN' TIME
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Returns refractive index of material for specified wavelength")
+    parser = argparse.ArgumentParser(
+        description="Returns refractive index of material for specified wavelength")
     parser.add_argument('catalog')
     parser.add_argument('section')
     parser.add_argument('book')
@@ -418,4 +465,4 @@ if __name__ == "__main__":
     args = parser.parse_args()
     catalog = RefractiveIndex(args.catalog)
     mat = catalog.getMaterial(args.section, args.book, args.page)
-    sys.stdout.write(str(mat.getRefractiveIndex(float(args.wavelength))))
+    sys.stdout.write(str(mat.get_refractive_index(float(args.wavelength))))
