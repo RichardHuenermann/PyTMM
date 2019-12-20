@@ -7,17 +7,17 @@ import scipy.interpolate
 import yaml
 
 from . import (ExtinctionCoefficientData, FormulaRefractiveIndexData,
-               NoExtinctionCoefficient, RefractiveIndex,
-               TabulatedRefractiveIndexData)
+               RefractiveIndex, TabulatedRefractiveIndexData)
 
 
 class Material:
     """ Material class"""
 
     def __init__(self, filename):
-        """
+        """constructor for Material object.
 
-        :param filename:
+        ## Args:
+            filename:
         """
         self.refractiveIndex = None
         self.extinctionCoefficient = None
@@ -77,10 +77,10 @@ class Material:
                                                                   coefficients=coefficents)
 
     def get_refractive_index(self, wavelength):
-        """
+        """returns refractive index
 
-        :param wavelength:
-        :return: :raise Exception:
+        Args:
+            wavelength (float)  # in nm
         """
         if self.refractiveIndex is None:
             raise Exception('No refractive index specified for this material')
@@ -88,13 +88,13 @@ class Material:
             return self.refractiveIndex.get_refractive_index(wavelength)
 
     def get_extinction_coefficient(self, wavelength):
-        """
+        """Returns extinction coefficient
 
-        :param wavelength:
-        :return: :raise NoExtinctionCoefficient:
+        Args:
+            wavelength (float)  # [nm]
         """
         if self.extinctionCoefficient is None:
-            raise NoExtinctionCoefficient(
+            raise ValueError(
                 'No extinction coefficient specified for this material')
         else:
             return self.extinctionCoefficient.get_extinction_coefficient(wavelength)

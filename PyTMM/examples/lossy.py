@@ -1,32 +1,39 @@
+"""Calculates reflectivity of lossy materials
+"""
 import matplotlib.pyplot as plt
 import numpy as np
 
-from PyTMM.transferMatrix import TransferMatrix, solvePropagation
+from PyTMM.transferMatrix import TransferMatrix
 
-r, t = [], []
-r1, t1 = [], []
-r2, t2 = [], []
-r3, t3 = [], []
 
 wavelengths = np.linspace(300, 1500, 2000)
-for i in wavelengths:
-    a = TransferMatrix.layer(1.46, 200, i)
-    b = TransferMatrix.layer(1.46 - 0.001j, 200, i)
-    c = TransferMatrix.layer(1.46 - 0.01j, 200, i)
-    d = TransferMatrix.layer(1.46 - 0.1j, 200, i)
+r = np.zeros(wavelengths.shape)
+r1 = np.zeros(wavelengths.shape)
+r2 = np.zeros(wavelengths.shape)
+r3 = np.zeros(wavelengths.shape)
 
-    R = solvePropagation(a)[0]
-    r.append(np.abs(R) ** 2)
-    R = solvePropagation(b)[0]
-    r1.append(np.abs(R) ** 2)
-    R = solvePropagation(c)[0]
-    r2.append(np.abs(R) ** 2)
-    R = solvePropagation(d)[0]
-    r3.append(np.abs(R) ** 2)
 
-plt.plot(wavelengths, r)
-plt.plot(wavelengths, r1)
-plt.plot(wavelengths, r2)
-plt.plot(wavelengths, r3)
-plt.legend(['1.46', '1.46-0.001j', '1.46-0.01j', '1.46-0.1j'], loc='best')
+for i, lam in enumerate(wavelengths):
+    a = TransferMatrix.layer(1.46, 200, lam)
+    b = TransferMatrix.layer(1.46 - 0.001j, 200, lam)
+    c = TransferMatrix.layer(1.46 - 0.01j, 200, lam)
+    d = TransferMatrix.layer(1.46 - 0.1j, 200, lam)
+
+    R, _ = a.solvePropagation()
+    r[i] = (np.abs(R) ** 2)
+    R, _ = b.solvePropagation()
+    r1[i] = (np.abs(R) ** 2)
+    R, _ = c.solvePropagation()
+    r2[i] = (np.abs(R) ** 2)
+    R, _ = d.solvePropagation()
+    r3[i] = (np.abs(R) ** 2)
+
+plt.title('Reflectance of a lossy material')
+plt.plot(wavelengths, r, label='1.46')
+plt.plot(wavelengths, r1, label='1.46-0.001j')
+plt.plot(wavelengths, r2, label='1.46-0.01j')
+plt.plot(wavelengths, r3, label='1.46-0.1j')
+plt.xlabel('wavelength (nm)')
+plt.ylabel('reflectance')
+plt.legend(loc='best')
 plt.show()

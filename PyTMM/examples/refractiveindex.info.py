@@ -2,7 +2,7 @@ import numpy
 import matplotlib.pyplot as plt
 import os
 
-from PyTMM.transferMatrix import TransferMatrix, solvePropagation
+from PyTMM.transferMatrix import TransferMatrix
 from PyTMM.refractiveIndex import RefractiveIndex
 
 database = os.path.join(os.path.dirname(os.path.realpath(__file__)),
@@ -16,7 +16,7 @@ reflectance = []
 
 for i in ran:
     a = TransferMatrix.boundingLayer(1, sio2.get_refractive_index(i))
-    R, T = solvePropagation(a)
+    R, T = a.solvePropagation()
     reflectance.append(numpy.abs(R ** 2))
 
 plt.plot(ran, reflectance)
