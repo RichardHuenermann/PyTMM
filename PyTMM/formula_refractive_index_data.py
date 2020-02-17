@@ -1,4 +1,4 @@
-import numpy as np
+from numpy import sqrt
 
 
 class FormulaRefractiveIndexData:
@@ -7,20 +7,22 @@ class FormulaRefractiveIndexData:
     def __init__(self, formula, rangeMin, rangeMax, coefficients):
         """constructor for FormulaRefractiveIndexData object
 
-            formula (int)  # selector for which refractive index formula will be used.
+            formula (int)
+                # selector for which refractive index formula will be used.
             rangeMin (float)  # minimum wavelength in microns.
             rangeMax (float)  # maximum wavelength in microns
             coefficients (list)  # list of floats, coefficients
         """
-        assert formula in range(
-            0, 7), 'Formula {} is not a valid option.'.format(formula)
+        assert formula in range(0, 10), (
+            f'Formula {formula} is not a valid option.')
         self.formula = formula
         self.rangeMin = rangeMin
         self.rangeMax = rangeMax
         self.coefficients = coefficients
 
     def get_ri_formula_name(self):
-        """Returns name of the selected refractive index formula given by self.formula.
+        """Returns name of the selected refractive index formula given by
+        self.formula.
         """
         ntype_dict = {1: 'sellmeier1',
                       2: 'sellmeier2',
@@ -34,7 +36,8 @@ class FormulaRefractiveIndexData:
         return ntype_dict[self.formula]
 
     def get_refractive_index(self, wavelength):
-        """selects refractive index method and returns the value at the speciffied wavelength.
+        """selects refractive index method and returns the value at the
+        speciffied wavelength.
 
         Args:
             wavelength (float): in nanometers.
@@ -46,9 +49,8 @@ class FormulaRefractiveIndexData:
         wavelength /= 1000.0
         if not (self.rangeMin <= wavelength <= self.rangeMax):
             raise ValueError(
-                'Wavelength {}um is out of bounds. Correct range(um): ({}, {})'.format(wavelength,
-                                                                                       self.rangeMin,
-                                                                                       self.rangeMax))
+                f'Wavelength {wavelength}um is out of bounds.'
+                f' Correct range(um): ({self.rangeMin}, {self.rangeMax})')
         ntype_switch = {1: self.ntype_sellmeier1,
                         2: self.ntype_sellmeier2,
                         3: self.ntype_polynomial,
@@ -60,7 +62,7 @@ class FormulaRefractiveIndexData:
                         9: self.ntype_exotic}
         if self.formula not in ntype_switch:
             raise KeyError(
-                'formula type {} does not exist.'.format(self.formula))
+                f'formula type {self.formula} does not exist.')
         return ntype_switch[self.formula](wavelength)
 
     def ntype_sellmeier1(self, wavelength):
@@ -72,14 +74,11 @@ class FormulaRefractiveIndexData:
             return c1 * (w**2) / (w**2 - c2**2)
 
         for i in range(1, len(self.coefficients), 2):
-            # TODO: make loop pythonic (list expression?)
-            nsq += sellmeier1_helper(self.coefficients[i],
-                                     self.coefficients[i + 1], wavelength)
-        return np.sqrt(nsq)
+            nsq += sellmeier1_helper(*self.coefficients[i:i + 2], wavelength)
+        return sqrt(nsq)
 
     def ntype_sellmeier2(self, wavelength):
         """Sellmeier equation
-        TODO: make loop pythonic (list expression?)
         """
         nsq = 1 + self.coefficients[0]
 
@@ -87,10 +86,8 @@ class FormulaRefractiveIndexData:
             return c1 * (w**2) / (w**2 - c2)
 
         for i in range(1, len(self.coefficients), 2):
-            # TODO: make loop pythonic (list expression?)
-            nsq += sellmeier2_helper(self.coefficients[i],
-                                     self.coefficients[i + 1], wavelength)
-        return np.sqrt(nsq)
+            nsq += sellmeier2_helper(*self.coefficients[i:i + 2], wavelength)
+        return sqrt(nsq)
 
     def ntype_polynomial(self, wavelength):
 
@@ -99,9 +96,8 @@ class FormulaRefractiveIndexData:
 
         nsq = self.coefficients[0]
         for i in range(1, len(self.coefficients), 2):
-            nsq += g(self.coefficients[i],
-                     self.coefficients[i + 1], wavelength)
-        return np.sqrt(nsq)
+            nsq += g(*self.coefficients[i:i + 2], wavelength)
+        return sqrt(nsq)
 
     def ntype_refindexinfo(self, wavelength):
         def g1(c1, c2, c3, c4, w):
@@ -112,13 +108,11 @@ class FormulaRefractiveIndexData:
 
         nsq = self.coefficients[0]
         for i in range(1, min(8, len(self.coefficients)), 4):
-            nsq += g1(self.coefficients[i], self.coefficients[i + 1],
-                      self.coefficients[i + 2], self.coefficients[i + 3], wavelength)
+            nsq += g1(*self.coefficients[i:i + 4], wavelength)
         if len(self.coefficients) > 9:
             for i in range(9, len(self.coefficients), 2):
-                nsq += g2(self.coefficients[i],
-                          self.coefficients[i + 1], wavelength)
-        return np.sqrt(nsq)
+                nsq += g2(*self.coefficients[i:i + 2], wavelength)
+        return sqrt(nsq)
 
     def ntype_cauchy(self, wavelength):
         def cauchy_helper(c1, c2, w):
@@ -126,8 +120,7 @@ class FormulaRefractiveIndexData:
 
         ref_index = self.coefficients[0]
         for i in range(1, len(self.coefficients), 2):
-            ref_index += cauchy_helper(self.coefficients[i],
-                                       self.coefficients[i + 1], wavelength)
+            ref_index += cauchy_helper(*self.coefficients[i:i + 2], wavelength)
         return ref_index
 
     def ntype_gasses(self, wavelength):
@@ -136,8 +129,7 @@ class FormulaRefractiveIndexData:
 
         ref_index = 1 + self.coefficients[0]
         for i in range(1, len(self.coefficients), 2):
-            ref_index += gasses_helper(self.coefficients[i],
-                                       self.coefficients[i + 1], wavelength)
+            ref_index += gasses_helper(*self.coefficients[i:i + 2], wavelength)
         return ref_index
 
     def ntype_herzberger(self, wavelength):
@@ -161,4 +153,3 @@ class FormulaRefractiveIndexData:
     def ntype_exotic(self, wavelength):
         raise NotImplementedError(
             'refractive index formula not implemented yet.')
-

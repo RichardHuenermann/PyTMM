@@ -13,7 +13,6 @@ class Polarization(enum.Enum):
     p = 1
 
 
-
 class TransferMatrix:
     """
         Dielectric layer TMM
@@ -83,7 +82,8 @@ class TransferMatrix:
             a21 = cos(theta2) / cos(theta)
 
         boundary = 1 / (2 * a21 * _n2) * np.array([[(_n1 + _n2), (_n2 - _n1)],
-                                                   [(_n2 - _n1), (_n1 + _n2)]], dtype=np.complex128)
+                                                   [(_n2 - _n1), (_n1 + _n2)]],
+                                                  dtype=np.complex128)
         return cls(boundary)
 
     @classmethod
@@ -100,7 +100,7 @@ class TransferMatrix:
 
         propagation = np.array(
             [[exp((-1j * n * d * 2 * np.pi / wavelength) * cos(theta2)), 0],
-            [0, exp((1j * n * d * 2 * np.pi / wavelength) * cos(theta2))]],
+             [0, exp((1j * n * d * 2 * np.pi / wavelength) * cos(theta2))]],
             dtype=np.complex128)
         return cls(propagation)
 

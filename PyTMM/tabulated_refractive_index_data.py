@@ -19,7 +19,7 @@ class TabulatedRefractiveIndexData:
         else:
             self.refractiveFunction = interp1d(wavelengths, values)
 
-    def get_refractive_index(self, wavelength):
+    def get_value(self, wavelength):
         """
 
         Args:
@@ -28,10 +28,10 @@ class TabulatedRefractiveIndexData:
         wavelength /= 1000.0
         if self.rangeMin == self.rangeMax and self.rangeMin == wavelength:
             return self.refractiveFunction
-        elif self.rangeMin <= wavelength <= self.rangeMax and self.rangeMin != self.rangeMax:
+        elif all([self.rangeMin <= wavelength <= self.rangeMax,
+                  self.rangeMin != self.rangeMax]):
             return self.refractiveFunction(wavelength)
         else:
             raise ValueError(
-                'Wavelength {} is out of bounds. Correct range(um): ({}, {})'.format(wavelength, self.rangeMin,
-                                                                                     self.rangeMax))
-
+                f'Wavelength {wavelength} is out of bounds.'
+                f' Correct range(um): ({self.rangeMin}, {self.rangeMax})')

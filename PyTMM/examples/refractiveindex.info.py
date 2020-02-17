@@ -9,8 +9,8 @@ sio2 = Material.from_catalog(library, 'main', 'SiO2', 'Malitson')
 ran = range(400, 800, 1)
 reflectance = []
 
-for i in ran:
-    a = TransferMatrix.boundingLayer(1, sio2.get_refractive_index(i))
+for wavelength in ran:
+    a = TransferMatrix.boundingLayer(1, sio2.get_refractive_index(wavelength))
     R, T = a.solvePropagation()
     reflectance.append(numpy.abs(R ** 2))
 

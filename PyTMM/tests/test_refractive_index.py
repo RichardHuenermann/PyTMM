@@ -4,9 +4,6 @@ import pytest
 
 from PyTMM import MaterialLibrary, Material
 
-# DB_PATH = os.path.join(os.path.dirname(os.path.realpath(__file__)),
-#                        os.path.normpath("../RefractiveIndex/"))
-
 
 class TestMaterialLibrary(TestCase):
     def setUp(self):
@@ -19,7 +16,6 @@ class TestMaterialLibrary(TestCase):
 
     def test_get_material_file(self):
         """iterates over entire library.yml and makes sure all files are found.
-        TODO: this doesn't succeed and I dont know why.
         """
         for shelf in self.library.catalog:
             for book in shelf['content']:
@@ -53,4 +49,3 @@ class TestMaterialLibrary(TestCase):
         with pytest.raises(FileNotFoundError):
             material_library.get_material_file(
                 shelf=shelf, book=book, page=page)
-

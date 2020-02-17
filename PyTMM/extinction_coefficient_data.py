@@ -3,20 +3,8 @@ import numpy as np
 
 
 class ExtinctionCoefficientData:
-    """ExtinctionCofficient class"""
-
-    @staticmethod
-    def setup_extinction_coefficient(wavelengths, values):
-        """
-
-        :param wavelengths:
-        :param values:
-        :return:
-        """
-        return ExtinctionCoefficientData(wavelengths, values)
-
     def __init__(self, wavelengths, coefficients):
-        """
+        """constructor for a ExtinctionCoefficientData object.
 
         :param wavelengths:
         :param coefficients:
@@ -26,19 +14,18 @@ class ExtinctionCoefficientData:
         self.rangeMin = np.min(wavelengths)
         self.rangeMax = np.max(wavelengths)
 
-    def get_extinction_coefficient(self, wavelength):
+    def get_value(self, wavelength):
         """
 
         :param wavelength:
         :return: :raise Exception:
         """
         wavelength /= 1000.0
-        if self.rangeMin <= wavelength <= self.rangeMax:
-            return self.extCoeffFunction(wavelength)
-        else:
-            raise Exception(
+        if not self.rangeMin <= wavelength <= self.rangeMax:
+            raise ValueError(
                 f'Wavelength {wavelength} is out of bounds.'
                 f' Correct range(um): ({self.rangeMin}, {self.rangeMax})')
+        return self.extCoeffFunction(wavelength)
 
 
 class NoExtinctionCoefficient(Exception):

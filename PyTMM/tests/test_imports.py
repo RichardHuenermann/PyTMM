@@ -9,11 +9,16 @@ class TestImports(TestCase):
         import_module('PyTMM')
         assert True
 
-    def test_import_material(self):
-        import_module('PyTMM.material')
-
-    def test_import_transfer_matrix(self):
-        getattr(import_module('PyTMM'), 'TransferMatrix')
-
-    def test_import_refractive_index(self):
-        getattr(import_module('PyTMM'), 'RefractiveIndex')
+    def test_import_classes(self):
+        all_classes = [
+            'FormulaRefractiveIndexData',
+            'ExtinctionCoefficientData',
+            'MaterialLibrary',
+            'ExtinctionCoefficientData',
+            'NoExtinctionCoefficient',
+            'TabulatedRefractiveIndexData',
+            'Material',
+            'TransferMatrix',
+            'Polarization']
+        for my_class in all_classes:
+            getattr(import_module('PyTMM'), my_class)

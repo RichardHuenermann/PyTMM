@@ -17,15 +17,16 @@ class MaterialLibrary:
     """
 
     def __init__(self, data_base_path=DATA_BASE_PATH):
-        """
+        """constructor for a MaterialLibrary object
 
         :param data_base_path:
         """
         self.data_path = Path(data_base_path)
+        if not self.data_path.exists():
+            raise ValueError('The data base path does not exist.')
         fname = self.data_path.parent / "library.yml"
         with open(fname, "rt", encoding="utf-8") as lib_yml:
             self.catalog = yaml.safe_load(lib_yml)
-
 
     def get_material_file(self, shelf, book, page):
         """
@@ -34,23 +35,20 @@ class MaterialLibrary:
         :param page:
         :return:
         """
-        found = False
         for shelf_iter in self.catalog:
             if shelf_iter['SHELF'] == shelf:
-                found = True
                 break
-        if not found:
+        else:
+            # is executed if no break occurs.
             print(f'shelf "{shelf}" not found.')
 
-        found = False
         for book_iter in shelf_iter['content']:
             try:
                 if book_iter['BOOK'] == book:
-                    found = True
                     break
             except KeyError:  # DIVIDER
                 pass
-        if not found:
+        else:
             print(f'book "{book}" not found.')
 
         for page_iter in book_iter['content']:
@@ -60,5 +58,7 @@ class MaterialLibrary:
             except KeyError:  # DIVIDER
                 pass
         raise FileNotFoundError(
-            f'Material file not found with parameters: shelf={shelf},'
-            f' book={book}, page={page}')
+            f'Material file not found with parameters:'
+            f' shelf={shelf},'
+            f' book={book},'
+            f' page={page}')

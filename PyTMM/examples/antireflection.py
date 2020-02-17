@@ -3,7 +3,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-from PyTMM.transferMatrix import TransferMatrix
+from PyTMM import TransferMatrix
 
 n1 = 1.5
 n2 = np.sqrt(n1)
