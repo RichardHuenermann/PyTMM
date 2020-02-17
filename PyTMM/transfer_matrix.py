@@ -98,9 +98,10 @@ class TransferMatrix:
         theta2 = np.arcsin((1 / n) * sin(theta),
                            dtype=np.complex128)
 
-        propagation = np.array([[exp((-1j * n * d * 2 * np.pi / wavelength) * cos(theta2)), 0],
-                                [0, exp((1j * n * d * 2 * np.pi / wavelength) * cos(theta2))]],
-                               dtype=np.complex128)
+        propagation = np.array(
+            [[exp((-1j * n * d * 2 * np.pi / wavelength) * cos(theta2)), 0],
+            [0, exp((1j * n * d * 2 * np.pi / wavelength) * cos(theta2))]],
+            dtype=np.complex128)
         return cls(propagation)
 
 
