@@ -9,55 +9,31 @@ from PyTMM import MaterialLibrary, Material
 
 
 class TestMaterialLibrary(TestCase):
-    def test_default_init(self):
+    def setUp(self):
+        self.library = MaterialLibrary()
 
-        material_library = MaterialLibrary()
-        db_path = material_library.path
-        lib_yml = db_path / "library.yml"
+    def test_default_init(self):
+        db_path = self.library.data_path
+        lib_yml = db_path.parent / "library.yml"
         assert lib_yml.is_file()
 
-
     def test_get_material_file(self):
-        """iterates over entiere library.yml and makes sure all files are found.
+        """iterates over entire library.yml and makes sure all files are found.
+        TODO: this doesn't succeed and I dont know why.
         """
-        material_library = MaterialLibrary()
-
-        for shelf in material_library.catalog:
+        for shelf in self.library.catalog:
             for book in shelf['content']:
                 if 'DIVIDER' in book:
                     continue
                 for page in book['content']:
                     if 'DIVIDER' in page:
                         continue
-                    mat_file = material_library.get_material_file(
+                    mat_file = self.library.get_material_file(
                         shelf['SHELF'], book['BOOK'], page['PAGE'])
                     assert mat_file.is_file()
 
-    def test_get_material_file_old(self):
-        """iterates over entiere library.yml and makes sure all files are found.
-        """
-        material_library = MaterialLibrary()
 
-        for shelf in material_library.catalog:
-            for book in shelf['content']:
-                if 'DIVIDER' in book:
-                    continue
-                for page in book['content']:
-                    if 'DIVIDER' in page:
-                        continue
-                    mat_file = material_library._get_material_file_opticspy(
-                        shelf['SHELF'], book['BOOK'], page['PAGE'])
-                    assert mat_file.is_file()
-
-    def test_get_mat_file_hikari(self):
-        material_library = MaterialLibrary()
-        shelf = 'glass'
-        book = 'HIKARI-FK'
-        page = 'J-KF6'
-        mat_file = material_library.get_material_file(shelf, book, page)
-        assert mat_file.is_file()
-
-    def test_get_fname_au_lemarchand(self):
+    def test_get_fname_nonexistent(self):
         """This file has the problem that the filename is not contained in the
         library.yml.
 
@@ -73,7 +49,7 @@ class TestMaterialLibrary(TestCase):
         material_library = MaterialLibrary()
         shelf = 'main'
         book = 'Au'
-        page = 'Lemarchand'
+        page = 'Lemarchand-doesntexist'
         with pytest.raises(FileNotFoundError):
             material_library.get_material_file(
                 shelf=shelf, book=book, page=page)
