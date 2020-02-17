@@ -4,15 +4,14 @@ from .extinctionCoefficientData import (ExtinctionCoefficientData,
                                         NoExtinctionCoefficient)
 from .formulaRefractiveIndexData import FormulaRefractiveIndexData
 from .material import Material
-from .refractiveIndex import RefractiveIndex
+from .material_library import DATA_BASE_PATH, MaterialLibrary
 from .tabulatedRefractiveIndexData import TabulatedRefractiveIndexData
 from .transferMatrix import Polarization, TransferMatrix
-from .refractiveIndex import DATA_BASE_PATH
 
 __all__ = [
     'FormulaRefractiveIndexData',
     'ExtinctionCoefficientData',
-    'RefractiveIndex',
+    'MaterialLibrary',
     'ExtinctionCoefficientData',
     'NoExtinctionCoefficient',
     'TabulatedRefractiveIndexData',
