@@ -6,9 +6,9 @@ from io import open
 import scipy.interpolate
 import yaml
 
-from .formulaRefractiveIndexData import FormulaRefractiveIndexData
-from .extinctionCoefficientData import ExtinctionCoefficientData
-from .tabulatedRefractiveIndexData import TabulatedRefractiveIndexData
+from .formula_refractive_index_data import FormulaRefractiveIndexData
+from .extinction_coefficient_data import ExtinctionCoefficientData
+from .tabulated_refractive_index_data import TabulatedRefractiveIndexData
 from .material_library import MaterialLibrary
 
 class Material:

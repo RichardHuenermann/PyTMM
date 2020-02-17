@@ -1,12 +1,12 @@
 """Python library for TMM and RefractiveIndex.info database operations
 """
-from .extinctionCoefficientData import (ExtinctionCoefficientData,
-                                        NoExtinctionCoefficient)
-from .formulaRefractiveIndexData import FormulaRefractiveIndexData
+from .extinction_coefficient_data import (ExtinctionCoefficientData,
+                                          NoExtinctionCoefficient)
+from .formula_refractive_index_data import FormulaRefractiveIndexData
 from .material import Material
 from .material_library import DATA_BASE_PATH, MaterialLibrary
-from .tabulatedRefractiveIndexData import TabulatedRefractiveIndexData
-from .transferMatrix import Polarization, TransferMatrix
+from .tabulated_refractive_index_data import TabulatedRefractiveIndexData
+from .transfer_matrix import Polarization, TransferMatrix
 
 __all__ = [
     'FormulaRefractiveIndexData',
