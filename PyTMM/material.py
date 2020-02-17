@@ -6,9 +6,9 @@ from io import open
 import scipy.interpolate
 import yaml
 
-from . import (ExtinctionCoefficientData, FormulaRefractiveIndexData,
-               TabulatedRefractiveIndexData)
-
+from .formulaRefractiveIndexData import FormulaRefractiveIndexData
+from .extinctionCoefficientData import ExtinctionCoefficientData
+from .tabulatedRefractiveIndexData import TabulatedRefractiveIndexData
 
 class Material:
     """ Material class"""
@@ -54,8 +54,8 @@ class Material:
                     if self.refractiveIndex is not None:
                         Exception('Bad Material YAML File')
 
-                    self.refractiveIndex = TabulatedRefractiveIndexData(wavelengths=wavelengths,
-                                                                        values=n)
+                    self.refractiveIndex = TabulatedRefractiveIndexData(
+                        wavelengths=wavelengths, values=n)
                     self.extinctionCoefficient = ExtinctionCoefficientData.setup_extinction_coefficient(
                         wavelengths, k)
             elif (data['type'].split())[0] == 'formula':

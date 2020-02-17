@@ -12,10 +12,9 @@ import scipy.interpolate
 from io import open
 from pathlib import Path
 
-from . import Material
+from .material import Material
 
-DATA_BASE_PATH = os.path.join(os.path.dirname(os.path.realpath(__file__)),
-                              os.path.normpath("glass_database/"))
+DATA_BASE_PATH = Path(__file__).parent.parent / "glass_database"
 
 
 class RefractiveIndex:
@@ -85,9 +84,8 @@ class RefractiveIndex:
         for f in files:
             if f == filename:
                 filepath = os.path.join(self.referencePath, root, filename)
-                break
+                return filepath
         print(filepath)
-        return filepath
 
     def get_material(self, shelf, book, page):
         """

@@ -9,7 +9,7 @@ from PyTMM.refractiveIndex import RefractiveIndex
 
 class TestRefractiveIndex(TestCase):
 
-    def test_defaultInit(self):
+    def test_default_init(self):
 
         try:
             database = RefractiveIndex()
