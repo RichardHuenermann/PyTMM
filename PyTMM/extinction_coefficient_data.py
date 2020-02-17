@@ -37,8 +37,8 @@ class ExtinctionCoefficientData:
             return self.extCoeffFunction(wavelength)
         else:
             raise Exception(
-                'Wavelength {} is out of bounds. Correct range(um): ({}, {})'.format(wavelength, self.rangeMin,
-                                                                                     self.rangeMax))
+                f'Wavelength {wavelength} is out of bounds.'
+                f' Correct range(um): ({self.rangeMin}, {self.rangeMax})')
 
 
 class NoExtinctionCoefficient(Exception):
