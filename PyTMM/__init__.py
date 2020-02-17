@@ -7,6 +7,7 @@ from .material import Material
 from .refractiveIndex import RefractiveIndex
 from .tabulatedRefractiveIndexData import TabulatedRefractiveIndexData
 from .transferMatrix import Polarization, TransferMatrix
+from .refractiveIndex import DATA_BASE_PATH
 
 __all__ = [
     'FormulaRefractiveIndexData',

@@ -1,12 +1,9 @@
-import numpy
 import matplotlib.pyplot as plt
-import os
+import numpy
 
-from PyTMM.transferMatrix import TransferMatrix
-from PyTMM.refractiveIndex import RefractiveIndex
+from PyTMM import DATA_BASE_PATH, RefractiveIndex, TransferMatrix
 
-database = os.path.join(os.path.dirname(os.path.realpath(__file__)),
-                        os.path.normpath("../../../refractiveindex.info-database/database/"))
+database = DATA_BASE_PATH
 catalog = RefractiveIndex(database)
 
 sio2 = catalog.get_material('main', 'SiO2', 'Malitson')

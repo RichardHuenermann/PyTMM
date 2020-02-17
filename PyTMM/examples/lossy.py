@@ -3,7 +3,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
-from PyTMM.transferMatrix import TransferMatrix
+from PyTMM import TransferMatrix
 
 
 wavelengths = np.linspace(300, 1500, 2000)

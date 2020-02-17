@@ -3,7 +3,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-from PyTMM.transferMatrix import TransferMatrix, Polarization
+from PyTMM import TransferMatrix, Polarization
 
 ref_index = 2
 thickness = 600  # slab thickness, nm
@@ -26,7 +26,8 @@ for i, angle in enumerate(angles_rad):
     R, T = a.solvePropagation()
     r_for_tm_polarization[i] = np.abs(R**2)
 
-#%% unfortunately this is not working, maybe transfer matrices could be admjusted so it will work:
+#%% unfortunately this is not working,
+# maybe transfer matrices could be admjusted so it will work:
 # # TE
 # a = TransferMatrix.layer(ref_index, thickness,
 #                          wavelength, angles_rad, Polarization.s)

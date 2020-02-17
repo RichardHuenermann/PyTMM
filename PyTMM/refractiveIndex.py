@@ -1,16 +1,17 @@
 """ TODO: add proper wavelength unit documentation in docstrings
 TODO: remove lambda expression assignments.
-FIXME: This sucks. Seriously. For one data point we have to open two files, and read the whole catalog.
+FIXME: This sucks. Seriously. For one data point we have to open two files,
+    and read the whole catalog.
 EVERY FRIKIN' TIME
 """
 import os
-import yaml
 import sys
-import argparse
-import numpy
-import scipy.interpolate
 from io import open
 from pathlib import Path
+
+import numpy
+import scipy.interpolate
+import yaml
 
 from .material import Material
 
@@ -18,17 +19,17 @@ DATA_BASE_PATH = Path(__file__).parent.parent / "glass_database"
 
 
 class RefractiveIndex:
-    """Class that parses the refractiveindex.info YAML database"""
+    """Class that parses the refractiveindex.info YAML database
+    """
 
-    def __init__(self, databasePath=DATA_BASE_PATH):
+    def __init__(self, data_base_path=DATA_BASE_PATH):
         """
 
-        :param databasePath:
+        :param data_base_path:
         """
-        self.referencePath = os.path.normpath(databasePath)
-        fileName = os.path.join(
-            self.referencePath, os.path.normpath("library.yml"))
-        with open(fileName, "rt", encoding="utf-8") as f:
+        self.data_base_path = Path(data_base_path)
+        fname = self.data_base_path / "library.yml"
+        with open(fname, "rt", encoding="utf-8") as f:
             self.catalog = yaml.safe_load(f)
 
         # TODO: Do i NEED namedtuples, or am i just wasting time?
@@ -70,7 +71,7 @@ class RefractiveIndex:
     #                                 if p['PAGE'] == page:
     #                                     # print("From {0} opening {1}, {2}\n".format(sh['name'], b['name'], p['name']))
     #                                     filename = os.path.join(
-    #                                         self.referencePath, 'data', os.path.normpath(p['data']))
+    #                                         self.data_base_path, 'data', os.path.normpath(p['data']))
     #                                     # print("Located at {}".format(filename))
     #     assert filename != ''
     #     return filename
@@ -78,12 +79,12 @@ class RefractiveIndex:
     def get_material_filename(self, shelf, book, page):
         glass_catalog = book
         filename = page + '.yml'
-        for root, _, files in os.walk(self.referencePath):
+        for root, _, files in os.walk(self.data_base_path):
             if root.endswith(glass_catalog):
                 break
         for f in files:
             if f == filename:
-                filepath = os.path.join(self.referencePath, root, filename)
+                filepath = self.data_base_path / root / filename
                 return filepath
         print(filepath)
 
@@ -98,17 +99,3 @@ class RefractiveIndex:
         return Material(self.get_material_filename(shelf, book, page))
 
 
-# Stuff to link to matlab
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser(
-        description="Returns refractive index of material for specified wavelength")
-    parser.add_argument('catalog')
-    parser.add_argument('section')
-    parser.add_argument('book')
-    parser.add_argument('page')
-    parser.add_argument('wavelength')
-
-    args = parser.parse_args()
-    catalog = RefractiveIndex(args.catalog)
-    mat = catalog.get_material(args.section, args.book, args.page)
-    sys.stdout.write(str(mat.get_refractive_index(float(args.wavelength))))

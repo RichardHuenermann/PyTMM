@@ -15,54 +15,49 @@ class TestRefractiveIndex(TestCase):
             database = RefractiveIndex()
         except FileNotFoundError:
             print("database not found at default location, checking custom location from \'./refractiveindex_database_location.txt\'")
-            database_path = ""
+            data_base_path = ""
             with open("refractiveindex_database_location.txt", "r") as f:
-                database_path = f.readline()
+                data_base_path = f.readline()
 
-            database = RefractiveIndex(databasePath=database_path)
+            database = RefractiveIndex(data_base_path=data_base_path)
         else:
-            assert os.path.exists(database.referencePath)
-            assert os.path.exists(os.path.join(database.referencePath, os.path.normpath("library.yml")))
-            assert os.path.isfile(os.path.join(database.referencePath, os.path.normpath("library.yml")))
+            assert os.path.exists(database.data_base_path)
+            assert os.path.exists(os.path.join(database.data_base_path, os.path.normpath("library.yml")))
+            assert os.path.isfile(os.path.join(database.data_base_path, os.path.normpath("library.yml")))
 
         finally:
-            assert os.path.exists(database.referencePath)
-            assert os.path.exists(os.path.join(database.referencePath, os.path.normpath("library.yml")))
-            assert os.path.isfile(os.path.join(database.referencePath, os.path.normpath("library.yml")))
+            assert os.path.exists(database.data_base_path)
+            assert os.path.exists(os.path.join(database.data_base_path, os.path.normpath("library.yml")))
+            assert os.path.isfile(os.path.join(database.data_base_path, os.path.normpath("library.yml")))
 
 
     def test_get_material_filename(self):
-        try:
-            database = RefractiveIndex()
-        except FileNotFoundError:
-            print("database not found at default location, checking custom location from \'./refractiveindex_database_location.txt\'")
-            database_path = ""
-            with open("refractiveindex_database_location.txt", "r") as f:
-                database_path = f.readline()
-
-            database = RefractiveIndex(databasePath=database_path)
+        database = RefractiveIndex()
 
         for sh in database.catalog:
             for b in sh['content']:
                 if 'DIVIDER' not in b:
                     for p in b['content']:
                         if 'DIVIDER' not in p:
-                            mat = database.get_material_filename(sh['SHELF'], b['BOOK'], p['PAGE'])
+                            mat = database.get_material_filename(
+                                sh['SHELF'], b['BOOK'], p['PAGE'])
                             assert os.path.exists(os.path.normpath(mat))
                             assert os.path.isfile(os.path.normpath(mat))
+
+    def test_get_au_lemarchand_filename(self):
+        database = RefractiveIndex()
+        shelf = 'main'
+        book = 'Au'
+        page = 'Lemarchand'
+        mat = database.get_material_filename(
+            shelf=shelf, book=book, page=page)
+        assert os.path.exists(os.path.normpath(mat))
+        assert os.path.isfile(os.path.normpath(mat))
 
     def test_get_material(self):
         """if get_material_filename doesn't work, then get_material cannot work either.
         """
-        try:
-            database = RefractiveIndex()
-        except FileNotFoundError:
-            print("database not found at default location, checking custom location from \'./refractiveindex_database_location.txt\'")
-            database_path = ""
-            with open("refractiveindex_database_location.txt", "r") as f:
-                database_path = f.readline()
-
-            database = RefractiveIndex(databasePath=database_path)
+        database = RefractiveIndex()
 
         for sh in database.catalog:
             for b in sh['content']:
@@ -86,10 +81,10 @@ if __name__ == '__main__':
         database = RefractiveIndex()
     except FileNotFoundError:
         print("database not found at default location, checking custom location from \'./refractiveindex_database_location.txt\'")
-        database_path = ""
+        data_base_path = ""
         with open("refractiveindex_database_location.txt", "r") as f:
-            database_path = f.readline()
-        database = RefractiveIndex(databasePath=database_path)
+            data_base_path = f.readline()
+        database = RefractiveIndex(data_base_path)
 
     for sh in database.catalog:
         print(sh)

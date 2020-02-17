@@ -3,8 +3,6 @@
 from unittest import TestCase
 from importlib import import_module
 
-from PyTMM.refractiveIndex import RefractiveIndex
-
 
 class TestImports(TestCase):
     def test_import_pytmm(self):
@@ -16,3 +14,6 @@ class TestImports(TestCase):
 
     def test_import_transfer_matrix(self):
         getattr(import_module('PyTMM'), 'TransferMatrix')
+
+    def test_import_refractive_index(self):
+        getattr(import_module('PyTMM'), 'RefractiveIndex')

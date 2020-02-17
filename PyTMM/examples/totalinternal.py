@@ -4,7 +4,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-from PyTMM.transferMatrix import TransferMatrix, Polarization
+from PyTMM import TransferMatrix, Polarization
 
 n = 2
 angles_of_incidence = np.linspace(0, np.pi / 2, 1000)

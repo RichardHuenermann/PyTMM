@@ -18,5 +18,5 @@
 
 function refractiveIndex = getRefractiveIndex(catalog, section, book, page, wavelength)
     %Usage getRefractiveIndex('path-to-refractive-index-database', 'main', 'SiO2', 'Malitson', 750s)
-    refractiveIndex = python('refractiveIndex.py', catalog, section, book, page, num2str(wavelength));
+    refractiveIndex = python('link_to_matlab.py', catalog, section, book, page, num2str(wavelength));
 end
