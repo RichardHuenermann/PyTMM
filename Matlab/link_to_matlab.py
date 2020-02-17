@@ -3,7 +3,7 @@
 import argparse
 import sys
 
-from .refractiveIndex import RefractiveIndex
+from PyTMM import Material, RefractiveIndex
 
 parser = argparse.ArgumentParser(
     description="Returns refractive index of material for specified wavelength")
@@ -15,5 +15,6 @@ parser.add_argument('wavelength')
 
 args = parser.parse_args()
 catalog = RefractiveIndex(args.catalog)
-mat = catalog.get_material(args.section, args.book, args.page)
-sys.stdout.write(str(mat.get_refractive_index(float(args.wavelength))))
+catalog_path = catalog.get_material_file(args.section, args.book, args.page)
+material = Material(catalog_path)
+sys.stdout.write(str(material.get_refractive_index(float(args.wavelength))))

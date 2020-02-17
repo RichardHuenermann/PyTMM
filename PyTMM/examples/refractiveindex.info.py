@@ -1,12 +1,10 @@
 import matplotlib.pyplot as plt
 import numpy
 
-from PyTMM import DATA_BASE_PATH, RefractiveIndex, TransferMatrix
+from PyTMM import DATA_BASE_PATH, MaterialLibrary, TransferMatrix, Material
 
-database = DATA_BASE_PATH
-catalog = RefractiveIndex(database)
-
-sio2 = catalog.get_material('main', 'SiO2', 'Malitson')
+library = MaterialLibrary()
+sio2 = Material.from_catalog(library, 'main', 'SiO2', 'Malitson')
 
 ran = range(400, 800, 1)
 reflectance = []

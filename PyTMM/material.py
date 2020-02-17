@@ -9,6 +9,7 @@ import yaml
 from .formulaRefractiveIndexData import FormulaRefractiveIndexData
 from .extinctionCoefficientData import ExtinctionCoefficientData
 from .tabulatedRefractiveIndexData import TabulatedRefractiveIndexData
+from .material_library import MaterialLibrary
 
 class Material:
     """ Material class"""
@@ -75,6 +76,13 @@ class Material:
                                                                   rangeMin=rangeMin,
                                                                   rangeMax=rangeMax,
                                                                   coefficients=coefficents)
+
+    @classmethod
+    def from_catalog(cls, material_library, shelf, book, page):
+        """replaces the ugly method MaterialLibrary.get_material()
+        """
+        catalog_path = material_library.get_material_file(shelf, book, page)
+        return cls(catalog_path)
 
     def get_refractive_index(self, wavelength):
         """returns refractive index
